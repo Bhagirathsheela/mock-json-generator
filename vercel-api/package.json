@@ -1,0 +1,12 @@
+{
+  "name": "mockapi-vercel-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Serverless master API for MockAPI Data Generator — stores collections in Upstash Redis and serves live CRUD endpoints.",
+  "dependencies": {
+    "@upstash/ratelimit": "^2.0.5",
+    "@upstash/redis": "^1.34.3",
+    "nanoid": "^5.0.9"
+  }
+}

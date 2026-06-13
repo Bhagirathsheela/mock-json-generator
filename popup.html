@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>MockAPI Data Generator</title>
+    <link rel="stylesheet" href="popup.css"/>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background: #f8fafc;
+        color: #1e293b;
+        width: 700px;
+        min-height: 520px;
+        display: flex;
+        flex-direction: column;
+        color: #f1f1f1;
+        line-height: 1.6;
+        font-family: Arial, sans-serif;
+      }
+
+      header {
+        background: linear-gradient(135deg, #3b82f6, #6366f1);
+        color: white;
+        padding: 16px;
+        border-bottom-left-radius: 12px;
+        border-bottom-right-radius: 12px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      }
+
+      header h1 {
+        font-size: 18px;
+        margin: 0;
+        text-align: center;
+      }
+      header .sub {
+        font-size: 14px;
+        opacity: 0.9;
+        margin-top: 4px;
+        color: #fff;
+        text-align: center;
+        font-style: italic;
+      }
+
+      section {
+        padding: 16px;
+      }
+
+      label {
+        font-weight: 600;
+        font-size: 13px;
+        display: block;
+        margin-bottom: 6px;
+      }
+
+      textarea {
+        width: 100%;
+        min-height: 120px;
+        resize: vertical;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        font-size: 13px;
+        font-family: monospace;
+        background: #ffffff;
+        box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+        transition: border 0.2s ease;
+      }
+
+      textarea:focus {
+        outline: none;
+        border: 1px solid #3b82f6;
+        box-shadow: 0 0 0 2px rgba(59,130,246,0.3);
+      }
+
+      .row {
+        display: flex;
+        gap: 12px;
+        margin: 12px 0;
+        flex-wrap: wrap;
+      }
+
+      .col {
+        flex: 1;
+        min-width: 120px;
+      }
+
+      select {
+        width: 100%;
+        padding: 8px;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        font-size: 13px;
+        background: white;
+      }
+
+      button {
+        flex: 1;
+        padding: 10px 12px;
+        border: none;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      button#generateBtn {
+        background: #3b82f6;
+        color: white;
+      }
+      button#generateBtn:hover {
+        background: #2563eb;
+      }
+
+      button.ghost {
+        background: #f1f5f9;
+        color: #334155;
+      }
+      button.ghost:hover {
+        background: #e2e8f0;
+      }
+
+      pre {
+        background: #0f172a;
+        color: #e2e8f0;
+        padding: 12px;
+        border-radius: 8px;
+        max-height: 200px;
+        overflow-y: auto;
+        font-size: 12px;
+        font-family: monospace;
+        box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+      }
+
+      footer {
+        margin-top: auto;
+        background: #f1f5f9;
+        text-align: center;
+        padding: 10px;
+        border-top: 1px solid #e2e8f0;
+        font-size: 11px;
+        color: #64748b;
+      }
+      .output_box_sec{
+        padding-top: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>MockAPI Data Generator</h1>
+      <p class="sub">Generate instant mock JSON API data with one click.</p>
+    </header>
+
+    <section class="controls">
+      <label>JSON template</label>
+      <textarea id="jsonInput" placeholder='Paste your JSON template here'></textarea>
+
+      <div class="row">
+        <div class="col">
+          <label>Number of objects</label>
+          <select id="countSelect">
+            <option>5</option>
+            <option>10</option>
+            <option>50</option>
+            <option>100</option>
+            <option>500</option>
+          </select>
+        </div>
+
+        <div class="col">
+          <label>Wrap output</label>
+          <select id="wrapType">
+            <option value="array">Array</option>
+            <option value="object">Object (key: data)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row">
+        <button id="generateBtn">Generate</button>
+        <button id="copyBtn" class="ghost">Copy</button>
+        <button id="downloadBtn" class="ghost">Download JSON</button>
+      </div>
+    </section>
+
+    <section class="output_box_sec">
+      <label>Output</label>
+      <pre id="output" aria-live="polite"></pre>
+    </section>
+
+    <footer>
+      <small>All processing is done locally in your browser.</small>
+    </footer>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

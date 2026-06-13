@@ -1,0 +1,26 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <!--
+    Strict bounds: every element lives inside the 0 0 128 128 box.
+    No filters, no drop-shadows, no outer strokes — nothing can bleed
+    past the canvas and skew the exported pixel dimensions.
+  -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="128" y2="128" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#6366f1"/>
+      <stop offset="1" stop-color="#4338ca"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background badge, flush to the bounds -->
+  <rect x="0" y="0" width="128" height="128" rx="28" fill="url(#bg)"/>
+
+  <!-- JSON braces { } drawn as inset stroked paths -->
+  <g fill="none" stroke="#ffffff" stroke-width="7"
+     stroke-linecap="round" stroke-linejoin="round">
+    <path d="M50 32 C40 32 42 44 42 52 C42 60 34 60 34 64 C34 68 42 68 42 76 C42 84 40 96 50 96"/>
+    <path d="M78 32 C88 32 86 44 86 52 C86 60 94 60 94 64 C94 68 86 68 86 76 C86 84 88 96 78 96"/>
+  </g>
+
+  <!-- Generation spark / bolt, centered between the braces -->
+  <path d="M67 40 L54 69 L62 69 L60 88 L74 57 L65 57 Z" fill="#fbbf24"/>
+</svg>
