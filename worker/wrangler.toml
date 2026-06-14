@@ -1,0 +1,11 @@
+name = "mock-json-generator-api"
+main = "src/index.js"
+compatibility_date = "2026-01-01"
+
+# KV namespace for storing collections. The `id` is filled in after you run:
+#   npx wrangler kv namespace create MOCK_KV
+# Paste the printed id below (and the preview_id for `wrangler dev`).
+[[kv_namespaces]]
+binding = "MOCK_KV"
+id = "f619083cbb424fa88308c982e9bbf4ae"
+# preview_id = "f619083cbb424fa88308c982e9bbf4ae"   # optional, for `wrangler dev`

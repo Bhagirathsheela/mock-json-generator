@@ -1,6 +1,6 @@
 {
   "name": "mock-json-generator",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Generate mock JSON API data and publish live, shareable CRUD endpoints.",
   "type": "module",
   "scripts": {

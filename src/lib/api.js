@@ -1,4 +1,4 @@
-// Client for the Vercel master API. Because the deployment host is listed
+// Client for the Cloudflare Worker API. Because the deployment host is listed
 // in the manifest's host_permissions, these cross-origin requests from the
 // extension are not subject to CORS preflight failures.
 
@@ -6,6 +6,12 @@ import { store } from "./storage.js";
 
 async function req(path, { method = "GET", body, editToken } = {}) {
   const base = await store.getApiBase();
+  if (!base) {
+    const err = new Error("No API URL set. Open Options and paste your Worker URL first.");
+    err.status = 0;
+    throw err;
+  }
+
   const headers = { "Content-Type": "application/json" };
   if (editToken) headers["x-edit-token"] = editToken;
 
@@ -28,6 +34,8 @@ async function req(path, { method = "GET", body, editToken } = {}) {
       message = retryAfter
         ? `You're going too fast — try again in ${retryAfter}s.`
         : "You're going too fast — please wait a moment and retry.";
+    } else if (res.status === 404) {
+      message = "Got 404 from the API. Check your Worker URL in Options.";
     }
     const err = new Error(message);
     err.status = res.status;

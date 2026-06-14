@@ -18,16 +18,16 @@ const SAMPLE = `{
 // Quick-insert chips — click to drop a typed field into the template.
 // Each snippet's key name + sample value drives the generator's type detection.
 const FIELD_CHIPS = [
-  { label: "id", snip: '"id": 1' },
-  { label: "name", snip: '"name": "John Doe"' },
-  { label: "email", snip: '"email": "john@example.com"' },
-  { label: "phone", snip: '"phone": "+919999999999"' },
-  { label: "date", snip: '"createdAt": "2024-01-01T00:00:00.000Z"' },
-  { label: "image", snip: '"avatar": "https://picsum.photos/seed/x/400/300"' },
-  { label: "bio", snip: '"bio": "short bio here"' },
-  { label: "price", snip: '"price": 1999' },
-  { label: "bool", snip: '"active": true' },
-  { label: "title", snip: '"title": "task"' },
+  { label: "id", field: "id", snip: '"id": 1' },
+  { label: "name", field: "name", snip: '"name": "John Doe"' },
+  { label: "email", field: "email", snip: '"email": "john@example.com"' },
+  { label: "phone", field: "phone", snip: '"phone": "+919999999999"' },
+  { label: "date", field: "createdAt", snip: '"createdAt": "2024-01-01T00:00:00.000Z"' },
+  { label: "image", field: "avatar", snip: '"avatar": "https://picsum.photos/seed/x/400/300"' },
+  { label: "bio", field: "bio", snip: '"bio": "short bio here"' },
+  { label: "price", field: "price", snip: '"price": 1999' },
+  { label: "bool", field: "active", snip: '"active": true' },
+  { label: "title", field: "title", snip: '"title": "task"' },
 ];
 
 export default function Popup() {
@@ -69,8 +69,13 @@ export default function Popup() {
   };
 
   // Insert a field snippet at the cursor, adding a comma when needed.
-  const insertField = ({ snip }) => {
+  const insertField = ({ field, snip }) => {
     const ta = taRef.current;
+    // Don't add a key that already exists in the template (single-object dedup).
+    if (field && new RegExp('"' + field + '"\\s*:').test(template)) {
+      notify('"' + field + '" is already added', "info");
+      return;
+    }
     setTemplate((prev) => {
       const text = prev ?? "";
       if (!text.trim()) return `{\n  ${snip}\n}`;
@@ -153,6 +158,18 @@ export default function Popup() {
   };
 
   const openOptions = () => chrome?.runtime?.openOptionsPage?.();
+  const openExplainer = () =>
+    window.open(
+      typeof chrome !== "undefined" && chrome?.runtime?.getURL
+        ? chrome.runtime.getURL("explainer.html")
+        : "explainer.html",
+      "_blank"
+    );
+
+  // Keys already present in the template — used to disable matching chips.
+  const presentKeys = new Set(
+    [...template.matchAll(/"([^"]+)"\s*:/g)].map((m) => m[1])
+  );
 
   return (
     <div className="flex min-h-[560px] w-[720px] flex-col bg-slate-50">
@@ -163,12 +180,20 @@ export default function Popup() {
             <h1 className="text-lg font-bold">Mock JSON Generator</h1>
             <p className="text-xs text-white/80">Generate mock JSON — or publish a live CRUD endpoint.</p>
           </div>
-          <button
-            onClick={openOptions}
-            className="rounded-lg bg-white/15 px-3 py-1.5 text-xs font-semibold hover:bg-white/25"
-          >
-            My Endpoints
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={openExplainer}
+              className="rounded-lg bg-white/15 px-3 py-1.5 text-xs font-semibold hover:bg-white/25"
+            >
+              How it works
+            </button>
+            <button
+              onClick={openOptions}
+              className="rounded-lg bg-white/15 px-3 py-1.5 text-xs font-semibold hover:bg-white/25"
+            >
+              My Endpoints
+            </button>
+          </div>
         </div>
       </header>
 
@@ -198,15 +223,20 @@ export default function Popup() {
           {/* Quick-add field chips */}
           <div className="mt-2 flex flex-wrap items-center gap-1.5">
             <span className="text-xs font-medium text-slate-400">Quick add:</span>
-            {FIELD_CHIPS.map((chip) => (
-              <button
-                key={chip.label}
-                onClick={() => insertField(chip)}
-                className="rounded-md border border-slate-200 bg-white px-2 py-0.5 font-mono text-xs text-slate-600 hover:border-brand-400 hover:bg-brand-50 hover:text-brand-700"
-              >
-                + {chip.label}
-              </button>
-            ))}
+            {FIELD_CHIPS.map((chip) => {
+              const added = presentKeys.has(chip.field);
+              return (
+                <button
+                  key={chip.label}
+                  onClick={() => insertField(chip)}
+                  disabled={added}
+                  title={added ? "Already added" : undefined}
+                  className={`rounded-md border px-2 py-0.5 font-mono text-xs ${added ? "cursor-not-allowed border-slate-100 bg-slate-50 text-slate-300" : "border-slate-200 bg-white text-slate-600 hover:border-brand-400 hover:bg-brand-50 hover:text-brand-700"}`}
+                >
+                  + {chip.label}
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -273,7 +303,7 @@ export default function Popup() {
       </main>
 
       <footer className="border-t border-slate-200 bg-slate-100 py-2.5 text-center text-[11px] text-slate-500">
-        Generation runs locally. Publishing sends data to your Vercel API.
+        Generation runs locally. Publishing sends data to the cloud API.
       </footer>
 
       <Toast toast={toast} onClear={() => setToast(null)} />

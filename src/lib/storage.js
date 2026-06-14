@@ -3,6 +3,10 @@
 
 const hasChrome = typeof chrome !== "undefined" && chrome?.storage?.local;
 
+// The deployed backend every install talks to by default. Power users can
+// override this in the Options page (e.g. if they self-host the Worker).
+const DEFAULT_API_BASE = "https://mock-json-generator-api.bhagirathsheela.workers.dev";
+
 async function get(keys) {
   if (hasChrome) return chrome.storage.local.get(keys);
   const out = {};
@@ -57,8 +61,8 @@ export const store = {
 
   async getApiBase() {
     const r = await get(KEYS.apiBase);
-    // Change this default to your deployed Vercel URL.
-    return r[KEYS.apiBase] || "https://your-project.vercel.app";
+    // Stored override (Options page) wins; otherwise use the built-in default.
+    return r[KEYS.apiBase] || DEFAULT_API_BASE;
   },
   async setApiBase(url) {
     await set({ [KEYS.apiBase]: url.replace(/\/+$/, "") });
